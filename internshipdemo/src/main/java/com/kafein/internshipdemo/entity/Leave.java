@@ -1,14 +1,16 @@
 package com.kafein.internshipdemo.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
+import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "leaves")
@@ -29,7 +31,21 @@ public class Leave {
     @JsonManagedReference
     private Employee employee;
 
-    private Integer days;
+
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private Date leaveDay;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private Date returnDay;
+
+    private String reason;
+
     private Long createdAt;
+
+
+    public int getDayDifference(){
+        return (int)( (this.returnDay.getTime() - this.leaveDay.getTime()) / (1000 * 60 * 60 * 24) );
+    }
 
 }

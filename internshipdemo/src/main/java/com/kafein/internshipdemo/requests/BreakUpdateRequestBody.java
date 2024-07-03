@@ -1,18 +1,37 @@
 package com.kafein.internshipdemo.requests;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Data
 public class BreakUpdateRequestBody {
 
+
+    @NotEmpty(message = "Id can't be empty")
     private Integer id;
-    private Integer days;
+
+    @NotEmpty(message = "Days can't be empty")
+    @JsonFormat
+            (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date leaveDay;
+
+    @NotEmpty(message = "Days can't be empty")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat
+            (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private Date returnDay;
+
+    @NotEmpty(message = "Reason can't be empty")
+    private String reason;
 
 
 
