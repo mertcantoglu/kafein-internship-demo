@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
+
 public class EmployeeController {
 
     private EmployeeService employeeService;
@@ -35,16 +36,14 @@ public class EmployeeController {
     }
 
     @PostMapping("/employees")
-    public Employee saveEmployee(@RequestBody Employee employee, @Value("${employee.break.duration}") Integer breakDuration){
-        employee.setId(0);
-        employee.setNumDaysBreak(breakDuration);
+    public Employee saveEmployee(@RequestBody Employee employee){
         Employee dbEmployee = employeeService.save(employee);
         return dbEmployee;
     }
 
     @PutMapping("/employees")
     public Employee updateEmployee(@RequestBody Employee employee){
-        Employee dbEmployee = employeeService.save(employee);
+        Employee dbEmployee = employeeService.update(employee);
         return dbEmployee;
     }
 

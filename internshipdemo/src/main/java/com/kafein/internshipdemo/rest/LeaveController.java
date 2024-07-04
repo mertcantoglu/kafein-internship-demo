@@ -9,7 +9,9 @@ import com.kafein.internshipdemo.exceptions.LeaveNotFoundException;
 import com.kafein.internshipdemo.requests.BreakUpdateRequestBody;
 import com.kafein.internshipdemo.service.EmployeeService;
 import com.kafein.internshipdemo.service.LeaveService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -27,35 +29,8 @@ public class LeaveController {
 
 
     @PostMapping("/leaves")
-    public Leave saveLeave(@RequestBody BreakUpdateRequestBody body){
-        Employee employee = employeeService.findById(body.getId());
-
-        int days = (int)( (body.getReturnDay().getTime() - body.getLeaveDay().getTime()) / (1000 * 60 * 60 * 24) );
-
-        if (employee == null){
-            throw new EmployeeNotFoundException("Employee id not found: " + body.getId());
-        }
-
-        Integer newBreakDuration = employee.getNumDaysBreak() - days;
-
-        if (days < 0){
-            throw new DaysCantBeNegativeException("Employee can't take negative days off.");
-        }
-        if (newBreakDuration < 0){
-            throw new EmployeeNotEnoughDaysException("Employee doesn't have enough leave rights for " + days + " days.");
-        }
-
-        employee.setNumDaysBreak(newBreakDuration);
-
-        Leave leave = new Leave();
-        leave.setEmployee(employee);
-        leave.setLeaveDay(body.getLeaveDay());
-        leave.setReturnDay(body.getReturnDay());
-        leave.setCreatedAt(System.currentTimeMillis());
-        leave.setReason(body.getReason());
-
-        Leave dbLeave = leaveService.save(leave);
-        employeeService.save(employee);
+    public Leave saveLeave(@Valid @RequestBody BreakUpdateRequestBody body){
+        Leave dbLeave = leaveService.save(body);
         return dbLeave;
     }
 
@@ -78,8 +53,8 @@ public class LeaveController {
 
         leaveService.deleteById(leaveId);
         Employee employee = leave.getEmployee();
-        employee.setNumDaysBreak(leave.getEmployee().getNumDaysBreak() + leave.getDayDifference() );
-        employeeService.save(employee);
+        employee.setNumDaysBreak(leave.getEmployee().getNumDaysBreak() + leave.getDayDifference());
+        employeeService.update(employee);
         return ( "Leave id deleted: "  + leaveId);
     }
 
