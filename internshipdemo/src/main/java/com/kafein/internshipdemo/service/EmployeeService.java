@@ -1,6 +1,8 @@
 package com.kafein.internshipdemo.service;
 
 import com.kafein.internshipdemo.entity.Employee;
+import com.kafein.internshipdemo.exceptions.DaysCantBeNegativeException;
+import com.kafein.internshipdemo.exceptions.EmployeeNotFoundException;
 import com.kafein.internshipdemo.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +38,7 @@ public class EmployeeService implements IEmployeeService {
             employee = result.get();
         }
        else {
-            throw new RuntimeException("Employee can't find by id: " + theId);
+            throw new EmployeeNotFoundException("Employee can't find by id: " + theId);
         }
         return employee;
     }
@@ -52,12 +54,19 @@ public class EmployeeService implements IEmployeeService {
     @Override
     @Transactional
     public Employee update(Employee theEmployee) {
+        if (theEmployee.getNumDaysBreak() <0){
+            throw new DaysCantBeNegativeException("Days can't be negative");
+        }
         return employeeRepository.save(theEmployee);
     }
 
     @Override
     @Transactional
     public void deleteById(int theId) {
+        Employee employee = this.findById(theId);
+        if (employee == null){
+            throw new EmployeeNotFoundException("Employee id not found: " + theId);
+        }
         employeeRepository.deleteById(theId);
 
     }

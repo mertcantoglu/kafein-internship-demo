@@ -46,15 +46,7 @@ public class LeaveController {
 
     @DeleteMapping("/leaves/{leaveId}")
     public String deleteLeave(@PathVariable int leaveId){
-        Leave leave = leaveService.findById(leaveId);
-        if (leave == null){
-            throw new LeaveNotFoundException("Leave id not found: " + leaveId);
-        }
-
         leaveService.deleteById(leaveId);
-        Employee employee = leave.getEmployee();
-        employee.setNumDaysBreak(leave.getEmployee().getNumDaysBreak() + leave.getDayDifference());
-        employeeService.update(employee);
         return ( "Leave id deleted: "  + leaveId);
     }
 

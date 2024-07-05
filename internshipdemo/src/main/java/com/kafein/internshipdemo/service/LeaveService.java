@@ -5,6 +5,7 @@ import com.kafein.internshipdemo.entity.Leave;
 import com.kafein.internshipdemo.exceptions.DaysCantBeNegativeException;
 import com.kafein.internshipdemo.exceptions.EmployeeNotEnoughDaysException;
 import com.kafein.internshipdemo.exceptions.EmployeeNotFoundException;
+import com.kafein.internshipdemo.exceptions.LeaveNotFoundException;
 import com.kafein.internshipdemo.repository.EmployeeRepository;
 import com.kafein.internshipdemo.repository.LeaveRepository;
 import com.kafein.internshipdemo.requests.BreakUpdateRequestBody;
@@ -87,6 +88,15 @@ public class LeaveService implements ILeaveService{
     @Override
     @Transactional
     public void deleteById(int theId) {
+        Leave leave = this.findById(theId);
+        if (leave == null){
+            throw new LeaveNotFoundException("Leave id not found: " + theId);
+        }
+
+        Employee employee = leave.getEmployee();
+        employee.setNumDaysBreak(leave.getEmployee().getNumDaysBreak() + leave.getDayDifference());
+        employeeService.update(employee);
+
         leaveRepository.deleteById(theId);
     }
 }
