@@ -35,6 +35,11 @@ public class BreakUpdateRequestBody {
     @NotNull(message = "Reason can't be empty")
     private String reason;
 
+    @NotNull(message = "Is leave half day can't be empty")
+    private boolean leaveHalfDay;
+
+    @NotNull(message = "Is return half day can't be empty")
+    private boolean returnHalfDay;
 
 
 }

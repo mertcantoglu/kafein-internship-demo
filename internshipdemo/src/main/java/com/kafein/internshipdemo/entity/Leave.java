@@ -1,12 +1,9 @@
 package com.kafein.internshipdemo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
-import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -43,9 +40,22 @@ public class Leave {
 
     private Long createdAt;
 
+    private boolean leaveHalfDay;
+    private boolean returnHalfDay;
 
-    public int getDayDifference(){
-        return (int)( (this.returnDay.getTime() - this.leaveDay.getTime()) / (1000 * 60 * 60 * 24) );
+
+    public Double getDayDifference(){
+        Long milisecondsInDay = 1000 * 60 * 60 * 24L;
+        Double dayOff = (double)((this.returnDay.getTime() - this.leaveDay.getTime()) / milisecondsInDay);
+        System.out.println("new");
+        System.out.println(dayOff);
+        if(this.isReturnHalfDay()) {
+            dayOff -= 0.5;
+            System.out.println("half");
+        }
+        if(this.isLeaveHalfDay()) dayOff -= 0.5;
+        System.out.println(dayOff);
+        return (dayOff);
     }
 
 }

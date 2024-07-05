@@ -18,7 +18,7 @@ public class EmployeeService implements IEmployeeService {
     private EmployeeRepository employeeRepository;
 
    @Value("${employee.break.duration}")
-   Integer breakDuration;
+   Double breakDuration;
 
     @Autowired
     public EmployeeService(EmployeeRepository employeeRepository) {

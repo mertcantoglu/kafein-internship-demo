@@ -16,7 +16,7 @@ public class Employee {
 
     private String department;
 
-    private Integer numDaysBreak;
+    private Double numDaysBreak;
 
     public Employee() {
     }
@@ -61,15 +61,7 @@ public class Employee {
         this.department = department;
     }
 
-    public Employee(String firstName, String lastName, String email, String department) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.department = department;
-        this.numDaysBreak = 15;
-    }
-
-    public Employee(String firstName, String lastName, String email, String department, Integer numDaysBreak ) {
+    public Employee(String firstName, String lastName, String email, String department, Double numDaysBreak ) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -78,11 +70,11 @@ public class Employee {
         this.numDaysBreak=numDaysBreak;
     }
 
-    public Integer getNumDaysBreak() {
+    public Double getNumDaysBreak() {
         return numDaysBreak;
     }
 
-    public void setNumDaysBreak(Integer numDaysBreak) {
+    public void setNumDaysBreak(Double numDaysBreak) {
         this.numDaysBreak = numDaysBreak;
     }
 }

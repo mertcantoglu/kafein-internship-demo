@@ -52,9 +52,9 @@ public class LeaveService implements ILeaveService{
 
         Employee employee = employeeService.findById(body.getId());
 
-        Integer newBreakDuration = getBreakDuration(body, employee);
-
-        employee.setNumDaysBreak(newBreakDuration);
+        if (employee == null){
+            throw new EmployeeNotFoundException("Employee id not found: " + body.getId());
+        }
 
         Leave leave = new Leave();
         leave.setEmployee(employee);
@@ -62,27 +62,23 @@ public class LeaveService implements ILeaveService{
         leave.setReturnDay(body.getReturnDay());
         leave.setCreatedAt(System.currentTimeMillis());
         leave.setReason(body.getReason());
+        leave.setLeaveHalfDay(body.isLeaveHalfDay());
+        leave.setReturnHalfDay(body.isReturnHalfDay());
 
-        employeeService.update(employee);
-        return leaveRepository.save(leave);
-    }
 
-    private static Integer getBreakDuration(BreakUpdateRequestBody body, Employee employee) {
-        if (employee == null){
-            throw new EmployeeNotFoundException("Employee id not found: " + body.getId());
-        }
+        Double dayOff = leave.getDayDifference();
+        Double newBreakDuration = employee.getNumDaysBreak() - dayOff;
 
-        int days = (int)( (body.getReturnDay().getTime() - body.getLeaveDay().getTime()) / (1000 * 60 * 60 * 24) );
-
-        Integer newBreakDuration = employee.getNumDaysBreak() - days;
-
-        if (days < 0){
+        if (dayOff < 0){
             throw new DaysCantBeNegativeException("Employee can't take negative days off.");
         }
         if (newBreakDuration < 0){
-            throw new EmployeeNotEnoughDaysException("Employee doesn't have enough leave rights for " + days + " days.");
+            throw new EmployeeNotEnoughDaysException("Employee doesn't have enough leave rights for " + dayOff + " days.");
         }
-        return newBreakDuration;
+
+        employee.setNumDaysBreak(newBreakDuration);
+        employeeService.update(employee);
+        return leaveRepository.save(leave);
     }
 
     @Override
