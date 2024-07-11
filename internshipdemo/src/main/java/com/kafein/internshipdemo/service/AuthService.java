@@ -1,5 +1,6 @@
 package com.kafein.internshipdemo.service;
 
+import com.kafein.internshipdemo.dto.UserDTO;
 import com.kafein.internshipdemo.entity.User;
 import com.kafein.internshipdemo.enums.Role;
 import com.kafein.internshipdemo.payload.request.LoginRequest;
@@ -16,6 +17,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -27,6 +31,7 @@ public class AuthService {
 
 
 
+  @Secured("ADMIN")
     public ResponseEntity<?> register(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             return ResponseEntity
@@ -61,6 +66,7 @@ public class AuthService {
 
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow();
+
         String token = jwtService.generateToken(user);
 
         return ResponseEntity
@@ -69,4 +75,26 @@ public class AuthService {
                         user.getFirstName() + " " + user.getLastName(),
                         user.getRole().name()));
     }
-}
+
+
+    @Secured("ADMIN")
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserDTO(user.getId(),user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole()))
+                .collect(Collectors.toList());
+    }
+
+    @Secured("ADMIN")
+    public ResponseEntity<MessageResponse> deleteUser(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow();
+        if (user.getRole().equals(Role.ADMIN)) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Admin cannot be deleted!"));
+        }
+
+        userRepository.deleteById(userId);
+        return ResponseEntity.ok(new MessageResponse("User deleted successfully"));
+    }
+ }
