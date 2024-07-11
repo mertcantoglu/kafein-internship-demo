@@ -47,14 +47,11 @@ public class Leave {
     public Double getDayDifference(){
         Long milisecondsInDay = 1000 * 60 * 60 * 24L;
         Double dayOff = (double)((this.returnDay.getTime() - this.leaveDay.getTime()) / milisecondsInDay);
-        System.out.println("new");
-        System.out.println(dayOff);
+
         if(this.isReturnHalfDay()) {
             dayOff -= 0.5;
-            System.out.println("half");
         }
         if(this.isLeaveHalfDay()) dayOff -= 0.5;
-        System.out.println(dayOff);
         return (dayOff);
     }
 
