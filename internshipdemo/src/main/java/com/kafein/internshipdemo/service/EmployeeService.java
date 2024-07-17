@@ -1,6 +1,7 @@
 package com.kafein.internshipdemo.service;
 
 import com.kafein.internshipdemo.entity.Employee;
+import com.kafein.internshipdemo.entity.Leave;
 import com.kafein.internshipdemo.exceptions.DaysCantBeNegativeException;
 import com.kafein.internshipdemo.exceptions.EmployeeNotFoundException;
 import com.kafein.internshipdemo.repository.EmployeeRepository;
@@ -71,4 +72,11 @@ public class EmployeeService implements IEmployeeService {
 
     }
 
+    @Override
+    public Leave saveLeave(Employee theEmployee , Leave theLeave) {
+        theEmployee.getLeaves().add(theLeave);
+        employeeRepository.save(theEmployee);
+
+        return theLeave;
+    }
 }

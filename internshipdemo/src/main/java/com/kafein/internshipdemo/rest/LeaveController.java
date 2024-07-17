@@ -1,21 +1,17 @@
 package com.kafein.internshipdemo.rest;
 
-import com.kafein.internshipdemo.entity.Employee;
 import com.kafein.internshipdemo.entity.Leave;
-import com.kafein.internshipdemo.exceptions.DaysCantBeNegativeException;
-import com.kafein.internshipdemo.exceptions.EmployeeNotEnoughDaysException;
-import com.kafein.internshipdemo.exceptions.EmployeeNotFoundException;
-import com.kafein.internshipdemo.exceptions.LeaveNotFoundException;
+import com.kafein.internshipdemo.enums.LeaveStatus;
 import com.kafein.internshipdemo.requests.BreakUpdateRequestBody;
 import com.kafein.internshipdemo.service.EmployeeService;
 import com.kafein.internshipdemo.service.LeaveService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -39,6 +35,7 @@ public class LeaveController {
         return leaveService.findAll();
     }
 
+
     @GetMapping("/leaves/{employeeId}")
     public List<Leave> getLeavesByEmployeeId(@PathVariable int employeeId){
         return leaveService.findByEmployeeId(employeeId);
@@ -49,6 +46,14 @@ public class LeaveController {
         leaveService.deleteById(leaveId);
         return ( "Leave id deleted: "  + leaveId);
     }
+
+    @PutMapping("/leaves/{id}/status")
+    public ResponseEntity<Leave> updateLeaveRequestStatus(@PathVariable Integer id, @RequestBody Map<String, String> statusUpdate) {
+        String status = statusUpdate.get("status");
+        Leave updatedLeave = leaveService.updateLeaveRequestStatus(id, LeaveStatus.valueOf(status.toUpperCase()));
+        return ResponseEntity.ok(updatedLeave);
+    }
+
 
 
 

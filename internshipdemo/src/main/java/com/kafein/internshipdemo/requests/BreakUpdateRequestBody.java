@@ -17,9 +17,6 @@ import java.util.Date;
 public class BreakUpdateRequestBody {
 
 
-    @NotNull(message = "Id can't be empty")
-    private Integer id;
-
     @NotNull(message = "Days can't be empty")
     @JsonFormat
             (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")

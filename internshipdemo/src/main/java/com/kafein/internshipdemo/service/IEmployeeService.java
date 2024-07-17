@@ -1,7 +1,7 @@
 package com.kafein.internshipdemo.service;
 
 import com.kafein.internshipdemo.entity.Employee;
-import org.springframework.beans.factory.annotation.Value;
+import com.kafein.internshipdemo.entity.Leave;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ public interface IEmployeeService {
 
     Employee update(Employee theEmployee);
     void deleteById(int theId);
+    Leave saveLeave(Employee theEmployee, Leave leave);
 
 
 }

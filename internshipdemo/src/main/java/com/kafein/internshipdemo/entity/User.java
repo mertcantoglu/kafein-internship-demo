@@ -19,7 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
-
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "user_type")
 public class User implements UserDetails {
 
     public String getEmail() {

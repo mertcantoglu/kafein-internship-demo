@@ -2,6 +2,8 @@ package com.kafein.internshipdemo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.kafein.internshipdemo.enums.LeaveStatus;
+import com.kafein.internshipdemo.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -22,12 +24,7 @@ public class Leave {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "employee_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonManagedReference
-    private Employee employee;
-
+    private Integer employeeId;
 
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
@@ -42,6 +39,9 @@ public class Leave {
 
     private boolean leaveHalfDay;
     private boolean returnHalfDay;
+
+    @Enumerated(EnumType.STRING)
+    private LeaveStatus status;
 
 
     public Double getDayDifference(){
