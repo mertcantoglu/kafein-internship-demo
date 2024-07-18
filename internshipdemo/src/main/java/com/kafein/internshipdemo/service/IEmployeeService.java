@@ -1,13 +1,15 @@
 package com.kafein.internshipdemo.service;
 
+import com.kafein.internshipdemo.dto.EmployeeDTO;
 import com.kafein.internshipdemo.entity.Employee;
 import com.kafein.internshipdemo.entity.Leave;
 
 import java.util.List;
 
 public interface IEmployeeService {
-    List<Employee> findAll();
+    List<EmployeeDTO> findAll();
     Employee findById(int theId);
+    EmployeeDTO getById(int theId);
     Employee save(Employee theEmployee);
 
     Employee update(Employee theEmployee);

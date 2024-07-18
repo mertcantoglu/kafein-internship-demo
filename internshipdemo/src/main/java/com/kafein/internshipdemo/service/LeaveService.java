@@ -30,6 +30,10 @@ public class LeaveService implements ILeaveService{
 
     @Override
     public List<Leave> findAll() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if ((user instanceof Employee)){
+            return this.findByEmployeeId(user.getId());
+        }
         return leaveRepository.findAll();
     }
 
@@ -53,7 +57,6 @@ public class LeaveService implements ILeaveService{
         }
 
         Employee employee = employeeService.findById(user.getId());
-
 
         Leave leave = new Leave();
         leave.setEmployeeId(employee.getId());
@@ -111,6 +114,9 @@ public class LeaveService implements ILeaveService{
             Employee employee = employeeService.findById(leave.getEmployeeId());
             Double dayOff = leave.getDayDifference();
             Double newBreakDuration = employee.getNumDaysBreak() - dayOff;
+            if (newBreakDuration < 0){
+                throw new EmployeeNotEnoughDaysException("Employee doesn't have enough leave rights for " + dayOff + " days.");
+            }
             employee.setNumDaysBreak(newBreakDuration);
             employeeService.update(employee);
         }

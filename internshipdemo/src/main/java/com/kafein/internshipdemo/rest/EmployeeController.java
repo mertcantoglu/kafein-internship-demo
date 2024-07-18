@@ -1,8 +1,12 @@
 package com.kafein.internshipdemo.rest;
 
+import com.kafein.internshipdemo.dto.EmployeeDTO;
 import com.kafein.internshipdemo.entity.Employee;
+import com.kafein.internshipdemo.entity.User;
 import com.kafein.internshipdemo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,13 +24,13 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public List<Employee> getAllEmployees(){
+    public List<EmployeeDTO> getAllEmployees(){
         return employeeService.findAll();
     }
 
     @GetMapping("/employees/{employeeId}")
-    public Employee getEmployee(@PathVariable int employeeId){
-        return employeeService.findById(employeeId);
+    public EmployeeDTO getEmployee(@PathVariable int employeeId){
+        return employeeService.getById(employeeId);
     }
 
     @PutMapping("/employees")
