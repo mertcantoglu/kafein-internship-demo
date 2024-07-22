@@ -1,5 +1,6 @@
 package com.kafein.internshipdemo.service;
 
+import com.kafein.internshipdemo.dto.EmployeeDTO;
 import com.kafein.internshipdemo.entity.Employee;
 import com.kafein.internshipdemo.entity.Leave;
 import com.kafein.internshipdemo.entity.User;
@@ -16,7 +17,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LeaveService implements ILeaveService{
@@ -58,6 +61,7 @@ public class LeaveService implements ILeaveService{
 
         Employee employee = employeeService.findById(user.getId());
 
+
         Leave leave = new Leave();
         leave.setEmployeeId(employee.getId());
         leave.setLeaveDay(body.getLeaveDay());
@@ -67,6 +71,12 @@ public class LeaveService implements ILeaveService{
         leave.setLeaveHalfDay(body.isLeaveHalfDay());
         leave.setReturnHalfDay(body.isReturnHalfDay());
         leave.setStatus(LeaveStatus.PENDING);
+
+        for (Leave existingLeave : employee.getLeaves()) {
+            if (isOverlap(existingLeave, leave.getLeaveDay(), leave.getReturnDay())) {
+                throw new RuntimeException("You already have a leave during this period.");
+            }
+        }
 
         Double dayOff = leave.getDayDifference();
         Double newBreakDuration = employee.getNumDaysBreak() - dayOff;
@@ -126,4 +136,11 @@ public class LeaveService implements ILeaveService{
         leaveRepository.save(leave);
         return leave;
     }
+
+    private boolean isOverlap(Leave existingLeave, Date newLeaveDay, Date newReturnDay) {
+        return (newLeaveDay.before(existingLeave.getReturnDay()) && newReturnDay.after(existingLeave.getLeaveDay())) ||
+                (newLeaveDay.equals(existingLeave.getLeaveDay()) || newReturnDay.equals(existingLeave.getReturnDay()));
+    }
+
+
 }

@@ -3,6 +3,7 @@ package com.kafein.internshipdemo.rest;
 import com.kafein.internshipdemo.dto.EmployeeDTO;
 import com.kafein.internshipdemo.entity.Employee;
 import com.kafein.internshipdemo.entity.User;
+import com.kafein.internshipdemo.enums.LeaveStatus;
 import com.kafein.internshipdemo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -24,7 +25,10 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public List<EmployeeDTO> getAllEmployees(){
+    public List<EmployeeDTO> getAllEmployees(@RequestParam(required = false) String status){
+        if (status != null){
+            return employeeService.findByStatus(LeaveStatus.valueOf(status.toUpperCase()));
+        }
         return employeeService.findAll();
     }
 

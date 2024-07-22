@@ -1,6 +1,7 @@
 package com.kafein.internshipdemo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kafein.internshipdemo.enums.LeaveStatus;
 import com.kafein.internshipdemo.enums.Role;
@@ -29,6 +30,7 @@ public class Leave {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date leaveDay;
+
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date returnDay;

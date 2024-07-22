@@ -1,5 +1,6 @@
 package com.kafein.internshipdemo.dto;
 
+import com.kafein.internshipdemo.entity.Employee;
 import com.kafein.internshipdemo.entity.Leave;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +21,5 @@ public class EmployeeDTO {
     private String department;
     private Double numDaysBreak;
     private List<Leave> leaves;
+
 }

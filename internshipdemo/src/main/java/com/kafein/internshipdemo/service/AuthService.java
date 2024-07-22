@@ -105,6 +105,7 @@ public class AuthService {
     @Secured("ADMIN")
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
+                .filter(user -> !user.getRole().equals(Role.EMPLOYEE))
                 .map(user -> new UserDTO(user.getId(),user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole()))
                 .collect(Collectors.toList());
     }
