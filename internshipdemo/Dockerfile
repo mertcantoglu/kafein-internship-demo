@@ -1,4 +1,3 @@
-# Start with a base image containing Java runtime
 FROM openjdk:17-jdk-slim
 
 VOLUME /tmp
