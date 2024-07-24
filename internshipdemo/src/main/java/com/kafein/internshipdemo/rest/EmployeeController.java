@@ -1,13 +1,19 @@
 package com.kafein.internshipdemo.rest;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kafein.internshipdemo.dto.EmployeeDTO;
 import com.kafein.internshipdemo.entity.Employee;
-import com.kafein.internshipdemo.exceptions.DaysCantBeNegativeException;
-import com.kafein.internshipdemo.exceptions.EmployeeNotFoundException;
+import com.kafein.internshipdemo.entity.User;
+import com.kafein.internshipdemo.enums.LeaveStatus;
 import com.kafein.internshipdemo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,24 +29,28 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public List<Employee> getAllEmployees(){
+    public List<EmployeeDTO> getAllEmployees(@RequestParam(required = false) String status ,
+                                             @RequestParam(required = false)
+                                             @DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
+
+
+        if (status != null && date != null){
+            throw new RuntimeException("You can't use status and date parameters together");
+        } else if (status != null) {
+            return employeeService.findByStatus(LeaveStatus.valueOf(status.toUpperCase()));
+        } else if (date != null) {
+            return employeeService.findOffsByDate(date);
+        }
         return employeeService.findAll();
     }
 
     @GetMapping("/employees/{employeeId}")
-    public Employee getEmployee(@PathVariable int employeeId){
-        return employeeService.findById(employeeId);
-    }
-
-    @PostMapping("/employees")
-    public Employee saveEmployee(@RequestBody Employee employee){
-        Employee dbEmployee = employeeService.save(employee);
-        return dbEmployee;
+    public EmployeeDTO getEmployee(@PathVariable int employeeId){
+        return employeeService.getById(employeeId);
     }
 
     @PutMapping("/employees")
     public Employee updateEmployee(@RequestBody Employee employee){
-
         Employee dbEmployee = employeeService.update(employee);
         return dbEmployee;
     }
