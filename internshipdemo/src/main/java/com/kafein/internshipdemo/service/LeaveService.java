@@ -72,7 +72,12 @@ public class LeaveService implements ILeaveService{
         leave.setReturnHalfDay(body.isReturnHalfDay());
         leave.setStatus(LeaveStatus.PENDING);
 
-        for (Leave existingLeave : employee.getLeaves()) {
+        for (Leave existingLeave :
+                employee.getLeaves()
+                .stream()
+                        .filter(l -> l.getStatus() == LeaveStatus.APPROVE)
+                        .collect(Collectors.toList())
+        ) {
             if (isOverlap(existingLeave, leave.getLeaveDay(), leave.getReturnDay())) {
                 throw new RuntimeException("You already have a leave during this period.");
             }

@@ -7,6 +7,7 @@ import com.kafein.internshipdemo.entity.User;
 import com.kafein.internshipdemo.enums.LeaveStatus;
 import com.kafein.internshipdemo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContext;
@@ -30,7 +31,7 @@ public class EmployeeController {
     @GetMapping("/employees")
     public List<EmployeeDTO> getAllEmployees(@RequestParam(required = false) String status ,
                                              @RequestParam(required = false)
-                                             @DateTimeFormat(pattern = "dd-MM-yyyy") Date date){
+                                             @DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
 
 
         if (status != null && date != null){
