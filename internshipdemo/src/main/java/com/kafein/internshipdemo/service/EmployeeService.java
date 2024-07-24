@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -153,5 +154,33 @@ public class EmployeeService implements IEmployeeService {
                     .filter(employeeDTO -> employeeDTO != null)
                     .collect(Collectors.toList());
         }
+
+    @Override
+    public List<EmployeeDTO> findOffsByDate(Date date) {
+        return employeeRepository.findAll()
+                .stream()
+                .map(employee -> {
+                    List<Leave> dateLeaves = employee.getLeaves().stream()
+                            .filter(leave -> leave.getStatus() == LeaveStatus.APPROVE)
+                            .filter(leave -> leave.getReturnDay().after(date))
+                            .filter(leave -> leave.getLeaveDay().before(date))
+                            .collect(Collectors.toList());
+
+                    if (!dateLeaves.isEmpty()) {
+                        return EmployeeDTO.builder()
+                                .firstName(employee.getFirstName())
+                                .id(employee.getId())
+                                .lastName(employee.getLastName())
+                                .email(employee.getEmail())
+                                .leaves(dateLeaves)
+                                .department(employee.getDepartment())
+                                .numDaysBreak(employee.getNumDaysBreak())
+                                .build();
+                    }
+                    return null;
+                })
+                .filter(employeeDTO -> employeeDTO != null)
+                .collect(Collectors.toList());
     }
+}
 

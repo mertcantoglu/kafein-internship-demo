@@ -5,6 +5,7 @@ import com.kafein.internshipdemo.entity.Employee;
 import com.kafein.internshipdemo.entity.Leave;
 import com.kafein.internshipdemo.enums.LeaveStatus;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IEmployeeService {
@@ -17,6 +18,8 @@ public interface IEmployeeService {
     void deleteById(int theId);
     Leave saveLeave(Employee theEmployee, Leave leave);
     List<EmployeeDTO> findByStatus(LeaveStatus status);
+
+    List<EmployeeDTO> findOffsByDate(Date date);
 
 
 }
